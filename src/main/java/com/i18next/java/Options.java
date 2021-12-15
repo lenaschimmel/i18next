@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.i18next.android;
+package com.i18next.java;
 
 import java.util.Locale;
 
@@ -14,7 +14,7 @@ public class Options {
     @SuppressWarnings("unused")
     private static final String TAG = Options.class.getSimpleName();
 
-    private boolean mDebugMode = BuildConfig.DEBUG;
+    private boolean mDebugMode = false;
     private String[] mNameSpaces;
     private String mDefaultNameSpace;
     private String mReusePrefix = "$t(";

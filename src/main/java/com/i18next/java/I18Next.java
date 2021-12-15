@@ -1,15 +1,7 @@
 /**
  *
  */
-package com.i18next.android;
-
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.text.TextUtils;
-import android.util.Log;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+package com.i18next.java;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -17,14 +9,17 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.regex.Pattern;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * @author stan
  */
 public class I18Next {
-    /**
-     * Used locally to tag Logs
-     */
-    private static final String TAG = I18Next.class.getSimpleName();
+    static final Logger logger = LoggerFactory.getLogger(I18Next.class);
 
     private static final String PREF_KEY_I18N = "i18n_json";
 
@@ -59,21 +54,6 @@ public class I18Next {
         VERBOSE, WARNING, ERROR;
     }
 
-    public void saveInPreference(SharedPreferences sharedPreference) {
-        sharedPreference.edit().putString(PREF_KEY_I18N, mRootObject.toString()).commit();
-    }
-
-    public void loadFromPreference(SharedPreferences sharedPreference) {
-        String content = sharedPreference.getString(PREF_KEY_I18N, null);
-        if (content != null && content.length() > 0) {
-            try {
-                mRootObject = new JSONObject(content);
-            } catch (JSONException e) {
-                Log.w(TAG, e);
-            }
-        }
-    }
-
     public static boolean isI18NextKeyCandidate(CharSequence key) {
         if (key != null && key.length() > 0) {
             return key.toString().matches("([a-z0-9]+((\\_)([a-z0-9]+))*)+((\\.)[a-z0-9]+((\\_)([a-z0-9]+))*)+");
@@ -101,13 +81,13 @@ public class I18Next {
             }
             switch (logMode) {
                 case ERROR:
-                    Log.e(TAG, raw);
+                	logger.error(raw);
                     break;
                 case WARNING:
-                    Log.w(TAG, raw);
+                	logger.warn(raw);
                     break;
                 case VERBOSE:
-                    Log.v(TAG, raw);
+                	logger.debug(raw);
                     break;
 
             }
@@ -301,7 +281,7 @@ public class I18Next {
                         try {
                             JSONObject jsonObject = new JSONObject(textLeft);
                             String countParam = jsonObject.optString("count");
-                            if (!TextUtils.isEmpty(countParam)) {
+                            if (countParam.length() > 0) {
                                 String countParamWithReplace
                                         = getRawWithNestingReplaced(countParam, operation);
                                 if (countParamWithReplace != null) {
@@ -376,32 +356,6 @@ public class I18Next {
 
         public Loader(I18Next i18Next) {
             mI18Next = i18Next;
-        }
-
-        public Loader from(Context context, int resource) throws JSONException, IOException {
-            String json = null;
-            InputStream inputStream;
-            try {
-                inputStream = context.getResources().openRawResource(resource);
-            } catch (Exception ex) {
-                try {
-                    json = context.getResources().getString(resource);
-                } catch (Exception ex2) {
-                }
-                inputStream = null;
-            }
-            if (json == null && inputStream != null) {
-                InputStreamReader is = new InputStreamReader(inputStream);
-                StringBuilder sb = new StringBuilder();
-                BufferedReader br = new BufferedReader(is);
-                String read = br.readLine();
-                while (read != null) {
-                    sb.append(read);
-                    read = br.readLine();
-                }
-                json = sb.toString();
-            }
-            return from(json);
         }
 
         public Loader from(String json) throws JSONException {

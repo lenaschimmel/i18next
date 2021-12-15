@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.i18next.android;
+package com.i18next.java;
 
 import java.util.HashMap;
 import java.util.Map;

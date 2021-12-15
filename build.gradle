@@ -1,17 +1,72 @@
-buildscript {
-  repositories {
-    jcenter()
-  }
-  dependencies {
-    classpath 'com.android.tools.build:gradle:1.3.1'
-    classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.4.0'
-    classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.3.1'
-    classpath 'com.github.dcendents:android-maven-gradle-plugin:1.3'
-  }
+plugins {
+    id 'java-library'
+    id 'eclipse'
+    id 'ivy-publish'
 }
 
-allprojects {
-  repositories {
-    jcenter()
-  }
+version = '1.0.0'
+group = 'com.i18next'
+description = 'i18next internationalization library for Java'
+
+repositories {
+    /** Local repository that caches publicly available artifatcs files for use with Eclipse and Gradle. */
+	ivy {
+		url "file://"+IV_REPO+"/World" //must be absolute file
+		patternLayout {
+			artifact '[organization]/[module]/[revision]/[artifact]-[revision].[ext]'
+			ivy     '[organisation]/[module]/[revision]/ivy-[revision].xml'
+		}
+		//Needed in Gradle 6+ to be able to process dependencies without IVY descriptor
+		metadataSources {
+			ivyDescriptor();
+			artifact();
+		}
+	   
+	}
+	
+	/** Local repository that stores artifacts that are not publicly available */
+	ivy {
+		url "file://"+IV_REPO+"/Private" //must be absolute file
+		//As of Gradle 3.1 the [orgPath] attribute seems not yet to be supported.
+		//artifactPattern "file://"+IV_REPO+"/Private/[organization]/[module]/[revision]/[artifact]-[revision].[ext]"
+		patternLayout {
+			artifact '[organization]/[module]/[revision]/[artifact]-[revision].[ext]'
+			ivy     '[organisation]/[module]/[revision]/ivy-[revision].xml'
+		}
+		//Needed in Gradle 6+ to be able to process dependencies without IVY descriptor
+		metadataSources {
+			ivyDescriptor();
+			artifact();
+		}
+	   
+		//alternative pattern which allows us to retrieve artifacts (including dll's) that have a different or non-versioned name from the Ivy repository
+		//in gradle 3.1. group:module:revision must be specified without ext (this must be added in the artifact, if @ext is used, artifactPattern does not match (probably a gradle bug)
+		//artifactPattern "file://"+IV_REPO+"/IvyLibs[organization]/[module]/[revision]/[artifact].[ext]"
+		//print(IV_REPO)
+		//artifactPattern "file://D:/IV_REPO/IvyLibs[organization]/[module]/[revision]/[artifact].[ext]"
+	}
+	
+    mavenCentral()
+    //jcenter()
 }
+
+dependencies {
+	// Unit testing dependencies
+	implementation 'junit:junit:4.12'
+	implementation 'org.slf4j:slf4j-api:1.7.30'
+	implementation 'org.slf4j:slf4j-simple:1.8.0-beta0'
+	api 'org.json:json:20140107'
+}
+
+ publishing { 
+	 publications {
+		 ivy(IvyPublication) {
+			 from components.java
+		 }
+	 }
+	 repositories {
+		 ivy {
+			 url "file://$IV_REPO/Private"
+		 }
+	 }
+ }

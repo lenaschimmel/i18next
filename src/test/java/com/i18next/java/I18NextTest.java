@@ -1,12 +1,11 @@
-package com.i18next.android;
-
-import android.annotation.SuppressLint;
-import android.util.Log;
+package com.i18next.java;
 
 import org.json.JSONException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +18,7 @@ import static org.junit.Assert.fail;
 
 public class I18NextTest {
 
-    private static final String TAG = I18NextTest.class.getSimpleName();
+    static final Logger logger = LoggerFactory.getLogger(I18NextTest.class);
 
     private String mPreviousDefaultNamespace;
 
@@ -57,14 +56,14 @@ public class I18NextTest {
                     + "}";
             I18Next.getInstance().loader().from(content).namespace("common_test").load();
         } catch (JSONException e) {
-            Log.w(TAG, e);
+            logger.warn("Exception", e);
             fail(e.getMessage());
         }
         try {
             String content = "{\"app\":{\"name\":\"i18nextspecific\"}}";
             I18Next.getInstance().loader().from(content).namespace("specific").load();
         } catch (JSONException e) {
-            Log.w(TAG, e);
+        	logger.warn("Exception",e);
             fail(e.getMessage());
         }
         try {
@@ -72,7 +71,7 @@ public class I18NextTest {
             I18Next.getInstance().loader().from(content).lang("zz").namespace("common_test").load();
             I18Next.getInstance().getOptions().setFallbackLanguage("zz");
         } catch (JSONException e) {
-            Log.w(TAG, e);
+        	logger.warn("Exception",e);
             fail(e.getMessage());
         }
         I18Next.getInstance().getOptions().setDefaultNamespace("common_test");
@@ -161,7 +160,6 @@ public class I18NextTest {
                 I18Next.getInstance().t("app.sprintf", new Operation.SPrintF("a", "b", "c", "d")));
     }
 
-    @SuppressLint("DefaultLocale")
     @Test
     public void shouldReturnValueSprintFWithNumber() {
         assertEquals(String.format("%d %f", 1, 1.2f),
