@@ -1,40 +1,14 @@
-# i18next-android
+# i18next (java)
 
-[![Build Status](https://travis-ci.org/i18next/i18next-android.svg)](https://travis-ci.org/i18next/i18next-android)
-[![Coverage Status](https://coveralls.io/repos/i18next/i18next-android/badge.svg?service=github)](https://coveralls.io/github/i18next/i18next-android)
-[![jCenter](https://img.shields.io/bintray/v/bintray/jcenter/i18next-android.svg?label=jcenter)](https://bintray.com/bintray/jcenter?filterByPkgName=i18next-android)
-[![License](https://img.shields.io/badge/licence-MIT-373737.svg)](https://github.com/i18next/i18next-android/blob/master/LICENSE)
-
-
-i18next-android is a native Android port of [i18next](http://i18next.com/).
+i18next (java) is a native Java port of [i18next](http://i18next.com/), based on the [official andoird port](https://github.com/i18next/i18next-android).
 
 ## Why?
 
-In order to use the same translated strings for the Web, Android and iOS, we decided to use the i18next features and data formats.
+There is no official Java (Desktop/Server) port of the i18next client lib, only an android specific.
 
-This library is our implementation for Android.
-We've been using it in production for a few years.
+There already are other forks which do the same (remove android dependencies), but they lack license information. This one is forked from the MIT-licensed original and is MIT-licensed itself.
 
-## Download
-
-i18next-android is available under both jCenter and Maven Central.
-
-Grab via Gradle:
-```groovy
-dependencies {
-  compile 'com.i18next:i18next-android:1.0.0'
-}
-```
-or Maven:
-```xml
-<dependency>
-  <groupId>com.i18next</groupId>
-  <artifactId>i18next-android</artifactId>
-  <version>1.0.0</version>
-</dependency>
-```
-
-----------
+**The `build.gradle` is optimized for a specific in-company use, so you may need to adjust it.** For example by deleting all IVY-related entries which are used for internal publishing.
 
 ## Initialization
 
@@ -91,11 +65,6 @@ loader.lang(String lang)
 Your translations are in a JSON file.
 This file can be loaded in different ways:
 
-##### .json file in your ressources
-
-```java
-loader.from(Context context, int resource)
-```
 
 ##### JSON string
 
